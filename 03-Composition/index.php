@@ -148,23 +148,26 @@ class Order {
     private int $id;
     private string $status;
     private string $date;
-    private float $orderPrice;
-    private User $user; // New Line Added
-    public function __construct(int $id, string $status, string $date, float $orderPrice)
+    private array $products;
+    private User $user;
+    public function __construct(User $user)
     {
-        if($orderPrice < 0) {
-            echo "Price Cannot be Negative";
-            return;
-            }
-
-        $this->id = $id;
-        $this->status = $status;
-        $this->date = $date;
-        $this->orderPrice = $orderPrice;
+        $this->id = rand(1000,9999);
+        $this->status = "Pending";
+        $this->date = date("Y-m-d");
+        $this->products = [];
+        $this->user = $user;
     }
 
+    public function addProduct(Product $product): void
+    {
+        //Code
+    }
+    public function calculatePrice() /*: float*/ {
+        
+    }
     public function EnterPromoCode(string $code): void {
-
+        /*
         $data = file_get_contents('promo.json');
 
         $promoCodes = json_decode($data, true); // promoCode is an Array Because of "true"
@@ -178,11 +181,9 @@ class Order {
             } else {
             echo "Invalid Code";
         }
+        */
     }
 
-    public function getOrderPrice(): float {
-        return $this->orderPrice;
-    }
     public function getID(): int {
         return $this->id;
     }
@@ -192,8 +193,14 @@ class Order {
     public function getDate(): string {
         return $this->date;
     }
-    public function getUserName(): string {
-        return $this->user->getName();
+    public function getUser(): User {
+        return $this->user;
     }
 
+}
+
+class OrderItem {
+    private Product $product; // Composition => OrderItem has Product..
+    private int $quantity;
+    private float $price;
 }
