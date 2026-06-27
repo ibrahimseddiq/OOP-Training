@@ -31,7 +31,7 @@ class Product {
 
         $this->price += $amount;
     }
-    public function applayDiscount(float $percentage): void {
+    public function applyDiscount(float $percentage): void {
         $discount = $this->price * ($percentage / 100);
         $this->price -= $discount;
     }
@@ -81,7 +81,7 @@ class User {
 
     public function __construct(string $email,  string $phoneNumber, int $id ,string $name)
     {
-        if(!$this->ValidateEmail($email)) return;
+        if(!$this->validateEmail($email)) return;
         if(!$this->validatePhoneNumber($phoneNumber)) return;
 
         $this->id = $id;
@@ -92,13 +92,13 @@ class User {
     }
 
     public function changeEmail(string $newEmail): void {
-        if($this->ValidateEmail($newEmail)) {
+        if($this->validateEmail($newEmail)) {
             $this->email = $newEmail;
         } else {
             echo "Invalid Email Enterd!";
         }
     }
-    public function ValidateEmail(string $email) : bool {
+    public function validateEmail(string $email) : bool {
         if(filter_var($email,FILTER_VALIDATE_EMAIL)) {
             return true;
         }
@@ -148,23 +148,27 @@ class Order {
     private int $id;
     private string $status;
     private string $date;
-    private array $products;
+    private array $orderItems;
     private User $user;
     public function __construct(User $user)
     {
         $this->id = rand(1000,9999);
         $this->status = "Pending";
         $this->date = date("Y-m-d");
-        $this->products = [];
+        $this->orderItems = [];
         $this->user = $user;
     }
 
-    public function addProduct(Product $product): void
+    public function addOrderItem(OrderItem $orderitem): void
     {
-        //Code
+        $this->orderItems[] = $orderitem;
     }
     public function calculatePrice() /*: float*/ {
-        
+        $orderPrice = 0;
+        foreach ($this->orderItems as  $item) {
+            $orderPrice += $item->getTotalPrice();
+        }
+        return $orderPrice;
     }
     public function EnterPromoCode(string $code): void {
         /*
@@ -202,5 +206,16 @@ class Order {
 class OrderItem {
     private Product $product; // Composition => OrderItem has Product..
     private int $quantity;
-    private float $price;
+    private float $totalPrice;
+    public function __construct(Product $product, int $quantity)
+    {
+        if($quantity <= 0) return;
+        $this->product = $product;
+        $this->quantity = $quantity;
+    }
+
+    public function getTotalPrice() : float {
+        $this->totalPrice = $this->product->getPrice() * $this->quantity;
+        return $this->totalPrice;
+    }
 }
