@@ -263,6 +263,7 @@ abstract class Payment {
     private string $status;
     private string $date;
     abstract public function pay();
+    abstract public function getSuccessMessage(): string;
     public function __construct(Order $order)
     {
         $this->status = "Pending";
@@ -293,7 +294,9 @@ class VisaPayment extends Payment {
     public function pay() {
         // Add Visa Pay Logic
     }
-
+    public function getSuccessMessage(): string {
+        return "Payment completed using Visa.";
+    }
     public function getTransactionID() : string {
         return $this->transactionID;
     }
@@ -315,7 +318,9 @@ class WalletPayment extends Payment {
     public function pay() {
         // Add Wallet Pay Logic
     }
-
+    public function getSuccessMessage(): string {
+        return "Payment completed using Wallet.";
+    }
     public function getTransactionID() : string {
         return $this->transactionID;
     }
@@ -334,6 +339,9 @@ class ApplePayment extends Payment {
     public function pay() {
         // Add Apple Pay Logic
     }
+    public function getSuccessMessage(): string {
+        return "Payment completed using ApplePay.";
+    }
     public function getTransactionID() : string {
         return $this->transactionID;
     }
@@ -343,18 +351,14 @@ class CashPayment extends Payment {
     public function pay() {
         // Add Cash Pay Logic
     }
+    public function getSuccessMessage(): string {
+        return "Cash payment registered.";
+    }
 }
 class PaymentService
 {
     public function processPayment(Payment $payment)
     {
-        if($payment instanceof VisaPayment) 
-            echo "Payment completed using Visa.";
-        elseif($payment instanceof WalletPayment)
-            echo "Payment completed using Wallet.";
-        elseif ($payment instanceof CashPayment)
-            echo "Cash payment registered.";
-        elseif($payment instanceof ApplePayment)  // After Adding a class ApplePaymet I had to Edit in an old class!..
-            echo "Payment completed using ApplePay.";
+        echo $payment->getSuccessMessage();
     }
 }
