@@ -259,25 +259,19 @@ class OrderItem {
     }
 }
 
-class Payment {
+abstract class Payment {
     private float $amount;
     private string $status;
     private string $date;
 
     public function __construct(Order $order)
     {
-        /*if($amount != $order->calculatePrice()) {
-            echo "Wrong Value, Order's Price is: " . $order->calculatePrice();
-            return;
-        }*/
         $this->status = "Pending";
         $this->date = date("Y-m-d");
         $this->amount = $order->calculatePrice();
     }
 
-    public function pay() {
-        // Add Logic
-    }
+    abstract public function pay();
     public function getAmount() : float {
         return $this->amount;
     }
