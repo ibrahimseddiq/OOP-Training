@@ -359,6 +359,7 @@ class PaymentService
 {
     public function processPayment(Payment $payment)
     {
+        $payment->pay();
         echo $payment->getSuccessMessage();
     }
 }
