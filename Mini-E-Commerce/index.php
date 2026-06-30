@@ -106,8 +106,12 @@ class User implements IDiscountable {
 
     public function __construct(string $email,  string $phoneNumber, int $id ,string $name)
     {
-        if(!$this->validateEmail($email)) return;
-        if(!$this->validatePhoneNumber($phoneNumber)) return;
+        if(!$this->validateEmail($email)) {
+            throw new Exception("Invalid Email");
+        }
+        if(!$this->validatePhoneNumber($phoneNumber)) {
+            throw new Exception("Invalid Phone Number");
+        }
 
         $this->id = $id;
         $this->name = $name;
