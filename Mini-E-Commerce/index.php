@@ -195,14 +195,15 @@ class Seller extends User {
 class Order {
     private int $id;
     private string $status;
-    private string $date;
+    private string $createdAt;
     private array $orderItems;
     private User $user;
+    private float $discount = 0;
     public function __construct(User $user)
     {
         $this->id = rand(1000,9999);
         $this->status = "Pending";
-        $this->date = date("Y-m-d");
+        $this->createdAt = date("Y-m-d");
         $this->orderItems = [];
         $this->user = $user;
     }
@@ -211,29 +212,21 @@ class Order {
     {
         $this->orderItems[] = $orderitem;
     }
-    public function calculatePrice() : float {
+    public function calculateTotalPrice() : float {
         $orderPrice = 0;
         foreach ($this->orderItems as  $item) {
             $orderPrice += $item->getTotalPrice();
         }
         return $orderPrice;
     }
-    public function EnterPromoCode(string $code): void {
-        /*
-        $data = file_get_contents('promo.json');
-
-        $promoCodes = json_decode($data, true); // promoCode is an Array Because of "true"
-
-        if(isset($promoCodes[$code])) {
-            
-            $discount = $this->orderPrice * ($promoCodes[$code] / 100);
-            $this->orderPrice -= $discount;
-            echo "Order_Price After Discounting $promoCodes[$code]%: " . $this->orderPrice;
-        
-            } else {
-            echo "Invalid Code";
+    public function getFinalPrice() : float {
+        return $this->calculateTotalPrice() - $this->discount;
+    }
+    public function applyPromoCode(string $code): void {
+        $percentage = PromoCodeService::getDiscountPercentage($code);
+        if($percentage !== null) {
+            $this->discount = $this->calculateTotalPrice() * ($percentage / 100);
         }
-        */
     }
 
     public function getID(): int {
@@ -242,13 +235,23 @@ class Order {
     public function getStatus(): string {
         return $this->status;
     }
-    public function getDate(): string {
-        return $this->date;
+    public function getCreatedAt(): string {
+        return $this->createdAt;
     }
     public function getUser(): User {
         return $this->user;
     }
 
+}
+class PromoCodeService {
+    public static function getDiscountPercentage(string $code) : ?float {
+        $data = file_get_contents("promo.json");
+        $promoCodes = json_decode($data, true);
+        if(!isset($promoCodes[$code])) {
+            return null;
+        }
+        return $promoCodes[$code];
+    }
 }
 
 class OrderItem {
