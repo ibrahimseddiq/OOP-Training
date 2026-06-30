@@ -107,6 +107,7 @@ class User implements IDiscountable {
     public function __construct(string $email,  string $phoneNumber, int $id ,string $name)
     {
         if(!$this->validateEmail($email)) {
+            echo "Invalid Email Enterd!";
             throw new Exception("Invalid Email");
         }
         if(!$this->validatePhoneNumber($phoneNumber)) {
@@ -120,13 +121,13 @@ class User implements IDiscountable {
         $this->orders = [];
     }
 
-    public function changeEmail(string $newEmail): void {
-        if($this->validateEmail($newEmail)) {
-            $this->email = $newEmail;
-        } else {
-            echo "Invalid Email Enterd!";
+    public function changeEmail(string $newEmail): bool {
+        if (!$this->validateEmail($newEmail)) {
+            return false;
         }
-    }
+        $this->email = $newEmail;
+        return true;
+        }
     public function validateEmail(string $email) : bool {
         if(filter_var($email,FILTER_VALIDATE_EMAIL)) {
             return true;
@@ -142,13 +143,12 @@ class User implements IDiscountable {
         return preg_match($pattern,$phone);
     }
 
-    public function changePhone(string $newPhone) : void {
-        
-        if($this->validatePhoneNumber($newPhone)) { //Object Behavior Collaboration
-            $this->phoneNumber = $newPhone;
-        } else {
-            echo "Invalid Phone Number Enterd!";
-        }
+    public function changePhone(string $newPhone) : bool {
+        if(!$this->validatePhoneNumber($newPhone)) { 
+            return false;
+        } 
+        $this->phoneNumber = $newPhone;
+        return true;
     }
     
     public function getName() : string {
