@@ -11,15 +11,11 @@ class Product implements IDiscountable{
 
     public function __construct(float $price, int $stock, string $name, int $id )
     {
-        if($price < 0) {
-            echo "Price Cannot be Negative";
-            return;
-            }
+        if($price < 0) 
+            throw new Exception("Price Cannot be Negative");
         
-        if($stock < 0) {
-            echo "Stock cannot be negative";
-            return;
-        }
+        if($stock < 0) 
+            throw new Exception("Stock cannot be negative");
 
         $this->id = $id;
         $this->name = $name;
