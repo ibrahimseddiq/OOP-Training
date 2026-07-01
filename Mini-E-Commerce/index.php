@@ -257,17 +257,18 @@ class PromoCodeService {
 class OrderItem {
     private Product $product; // Composition => OrderItem has Product..
     private int $quantity;
-    private float $totalPrice;
+    private float $unitPrice;
     public function __construct(Product $product, int $quantity)
     {
-        if($quantity <= 0) return;
+        if($quantity <= 0) 
+            throw new Exception("Quantity must be greater than zero.");
         $this->product = $product;
         $this->quantity = $quantity;
+        $this->unitPrice = $product->getPrice();
     }
 
     public function getTotalPrice() : float {
-        $this->totalPrice = $this->product->getPrice() * $this->quantity;
-        return $this->totalPrice;
+        return $this->unitPrice * $this->quantity;
     }
 }
 
