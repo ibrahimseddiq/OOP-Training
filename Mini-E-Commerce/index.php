@@ -275,14 +275,14 @@ class OrderItem {
 abstract class Payment {
     private float $amount;
     private string $status;
-    private string $date;
+    private string $createdAt;
     abstract public function pay();
     abstract public function getSuccessMessage(): string;
     public function __construct(Order $order)
     {
         $this->status = "Pending";
-        $this->date = date("Y-m-d");
-        $this->amount = $order->calculatePrice();
+        $this->createdAt = date("Y-m-d");
+        $this->amount = $order->getFinalPrice();
     }
     public function getAmount() : float {
         return $this->amount;
@@ -291,7 +291,7 @@ abstract class Payment {
         return $this->status;
     }
     public function getDate() : string {
-        return $this->date;
+        return $this->createdAt;
     }
 }
 class VisaPayment extends Payment {
@@ -374,10 +374,10 @@ class CashPayment extends Payment {
 }
 class PaymentService
 {
-    public function processPayment(Payment $payment)
+    public function processPayment(Payment $payment) : string
     {
         $payment->pay();
-        echo $payment->getSuccessMessage();
+        return $payment->getSuccessMessage();
     }
 }
 
