@@ -280,6 +280,9 @@ abstract class Payment {
         $this->createdAt = date("Y-m-d");
         $this->amount = $order->getFinalPrice();
     }
+    protected function markAsPaid() : void {
+        $this->status = "Paid";
+    }
     public function getAmount() : float {
         return $this->amount;
     }
@@ -294,15 +297,15 @@ class VisaPayment extends Payment {
     private string $transactionID;
     private int $lastFourNumber;
 
-    public function __construct(Order $order, int $lastFourNumber, string $transactionID)
+    public function __construct(Order $order, int $lastFourNumber)
     {
         parent::__construct($order);
         $this->lastFourNumber = $lastFourNumber;
-        $this->transactionID = $transactionID;
     }
 
     public function pay() {
-        // Add Visa Pay Logic
+        $this->markAsPaid();
+        $this->transactionID = uniqid("TXN_");
     }
     public function getSuccessMessage(): string {
         return "Payment completed using Visa.";
@@ -318,15 +321,15 @@ class WalletPayment extends Payment implements IDiscountable{
     private string $transactionID;
     private int $walletNumber;
 
-    public function __construct(Order $order, int $walletNumber, string $transactionID)
+    public function __construct(Order $order, int $walletNumber)
     {
         parent::__construct($order);
         $this->walletNumber = $walletNumber;
-        $this->transactionID = $transactionID;
     }
 
     public function pay() {
-        // Add Wallet Pay Logic
+        $this->markAsPaid();
+        $this->transactionID = uniqid("TXN_");
     }
     public function getSuccessMessage(): string {
         return "Payment completed using Wallet.";
@@ -337,20 +340,20 @@ class WalletPayment extends Payment implements IDiscountable{
     public function getTransactionID() : string {
         return $this->transactionID;
     }
-    public function getLastFourNumber() : int {
+    public function getWalletNumber() : int {
         return $this->walletNumber;
     }
 }
 class ApplePayment extends Payment {
     private string $transactionID;
 
-    public function __construct(Order $order, string $transactionID)
+    public function __construct(Order $order)
     {
         parent::__construct($order);
-        $this->transactionID = $transactionID;
     }
     public function pay() {
-        // Add Apple Pay Logic
+        $this->markAsPaid();
+        $this->transactionID = uniqid("TXN_");
     }
     public function getSuccessMessage(): string {
         return "Payment completed using ApplePay.";
@@ -362,7 +365,7 @@ class ApplePayment extends Payment {
 class CashPayment extends Payment {
     
     public function pay() {
-        // Add Cash Pay Logic
+        $this->markAsPaid();
     }
     public function getSuccessMessage(): string {
         return "Cash payment registered.";
