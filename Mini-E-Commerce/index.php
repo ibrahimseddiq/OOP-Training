@@ -3,7 +3,7 @@
     //  The Code Has many Proplems and Bugs, this because i'm just Implement what i've learned in OOP..
     //  I will Fix it later in other lessons..
 
-class Product implements IDiscountable{
+class Product {
     private int $id;
     private string $name;
     private float $price;
@@ -28,12 +28,9 @@ class Product implements IDiscountable{
 
         $this->price += $amount;
     }
-    public function applyFirstDiscount(float $percentage): void {
+    public function applyDiscount(float $percentage): void {
         $discount = $this->price * ($percentage / 100);
         $this->price -= $discount;
-    }
-    public function applyDiscount() {
-        // Discount Logic
     }
     public function increaseStock(int $quantity): void {
         if ($quantity <= 0) {
@@ -93,7 +90,7 @@ class DigitalProduct extends Product { // DigitalProduct not have a Stock "Techn
     }
 }
 
-class User implements IDiscountable {
+class User {
     private int $id;
     private string $name;
     private string $email;
@@ -164,10 +161,6 @@ class User implements IDiscountable {
     
     public function addOrder(Order $order) : void {
         $this->orders[] = $order;
-    }
-
-    public function applyDiscount() {
-        // Discount Logic
     }
 }
 
@@ -317,7 +310,7 @@ class VisaPayment extends Payment {
         return $this->lastFourNumber;
     }
 }
-class WalletPayment extends Payment implements IDiscountable{
+class WalletPayment extends Payment {
     private string $transactionID;
     private int $walletNumber;
 
@@ -333,9 +326,6 @@ class WalletPayment extends Payment implements IDiscountable{
     }
     public function getSuccessMessage(): string {
         return "Payment completed using Wallet.";
-    }
-    public function applyDiscount() {
-        // Discount Logic
     }
     public function getTransactionID() : string {
         return $this->transactionID;
@@ -378,8 +368,4 @@ class PaymentService
         $payment->pay();
         return $payment->getSuccessMessage();
     }
-}
-
-interface IDiscountable {
-    public function applyDiscount();
 }
